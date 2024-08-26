@@ -7,16 +7,16 @@ export default [
   {
     languageOptions: { globals: globals.browser },
     ignores: ["**/node_modules/", "/dist"],
-    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
+    // "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
     rules: {
       "no-unused-vars": "error",
       "no-undef": "error",
       "no-console": "warn",
       "prefer-const": "error"  
     },
-    "globals":{
-      "process":"readonly"
-    }
+    // "globals":{
+    //   "process":"readonly"
+    // }
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
