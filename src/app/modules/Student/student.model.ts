@@ -7,8 +7,6 @@ import {
   Tstudent,
 } from './student.interface';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   FirstName: {
@@ -63,10 +61,11 @@ const localGurdianSchema = new Schema<TlocalGurdian>({
 const StudentSchema = new Schema<Tstudent, StudentModel>(
   {
     id: { type: String, required: true, unique: true },
-    password: {
-      type: String,
-      required: [true, 'password is required'],
-      maxlength: [20, 'password can not more than 20 character'],
+    user:{
+      type: Schema.Types.ObjectId,
+      required:[true, 'user id required'],
+      unique:true,
+      ref:'User'
     },
     name: {
       type: userNameSchema,
@@ -93,11 +92,6 @@ const StudentSchema = new Schema<Tstudent, StudentModel>(
     gurdian: gurdianSchema,
     localGurdian: localGurdianSchema,
     profileImg: { type: String, required: true },
-    isActive: {
-      type: String,
-      enum: ['active', 'blocked'],
-      default: 'active',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -114,21 +108,7 @@ const StudentSchema = new Schema<Tstudent, StudentModel>(
 StudentSchema.virtual('FullName').get(function () {
   return `${this.name.FirstName} ${this.name.MiddleName} ${this.name.LastName}`;
 });
-// presave middleware
-StudentSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_round_salt),
-  );
-  next();
-});
-// Post middleware
-StudentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
+
 
 StudentSchema.statics.isUserExist = async function (id: string) {
   const existingUser = await Student.findOne({ id });

@@ -4,7 +4,6 @@ import { studentController } from './student.controller'
 const router = express.Router()
 
 // will call controller
-router.post('/create-student', studentController.createStudent)
 
 router.get('/',studentController.getStudent)
 
